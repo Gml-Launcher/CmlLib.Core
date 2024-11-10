@@ -14,7 +14,7 @@ public class MinecraftJavaPathResolver : IJavaPathResolver
         this._path = path;
     }
 
-    public string[] GetInstalledJavaVersions()
+    public IReadOnlyCollection<string> GetInstalledJavaVersions(RulesEvaluatorContext rules)
     {
         var dir = new DirectoryInfo(_path.Runtime);
         if (!dir.Exists)
@@ -34,7 +34,6 @@ public class MinecraftJavaPathResolver : IJavaPathResolver
             .ToArray();
     }
 
-
     public string? GetDefaultJavaBinaryPath(RulesEvaluatorContext rules)
     {
         var javaVersions = GetInstalledJavaVersions();
@@ -49,8 +48,8 @@ public class MinecraftJavaPathResolver : IJavaPathResolver
             javaPath = GetJavaBinaryPath(MinecraftJavaPathResolver.CmlLegacyVersion, rules);
 
         if (string.IsNullOrEmpty(javaPath) &&
-            javaVersions.Length > 0)
-            javaPath = GetJavaBinaryPath(new JavaVersion(javaVersions[0]), rules);
+            javaVersions.Any())
+            javaPath = GetJavaBinaryPath(new JavaVersion(javaVersions.First()), rules);
 
         return javaPath;
     }

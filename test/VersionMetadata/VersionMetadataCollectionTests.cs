@@ -81,12 +81,12 @@ public class VersionMetadataCollectionTest
     }
 
     [Fact]
-    public void throw_circular_inheritance()
+    public async Task throw_circular_inheritance()
     {
         var (collection, parent, child) = createMocks();
         parent.InheritsFrom = child.Id;
 
-        Assert.ThrowsAsync<InvalidDataException>(async () =>
+        await Assert.ThrowsAsync<VersionDependencyException>(async () =>
         {
             await collection.GetVersionAsync("parent");
         });
@@ -108,19 +108,19 @@ public class VersionMetadataCollectionTest
     }
 
     [Fact]
-    public void throw_non_existent_parent_id()
+    public async Task throw_non_existent_parent_id()
     {
         var (collection, parent, child) = createMocks();
         child.InheritsFrom = "NON_EXISTENT_VERSION_ID";
 
-        Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+        await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
         {
             await collection.GetVersionAsync("child");
         });
     }
 
     [Fact]
-    public void throw_too_deep_inheritance()
+    public async Task throw_too_deep_inheritance()
     {
         var v1 = new MinecraftVersion("v1");
         var v2 = new MinecraftVersion("v2");
@@ -141,7 +141,7 @@ public class VersionMetadataCollectionTest
 
         collection.MaxDepth = 3;
 
-        Assert.ThrowsAsync<InvalidDataException>(async () => 
+        await Assert.ThrowsAsync<VersionDependencyException>(async () => 
         {
             await collection.GetVersionAsync("v4");
         });
@@ -197,7 +197,7 @@ public class VersionMetadataCollectionTest
             GameArgumentsForBaseVersion = [new MArgument("parent_base_arg")],
             JvmArguments = [new MArgument("parent_arg")],
             JvmArgumentsForBaseVersion = [new MArgument("parent_base_arg")],
-            Libraries = [new MLibrary("parent_lib")]
+            LibraryList = [new MLibrary("parent_lib")]
         };
 
         var child = new MinecraftVersion("child")
@@ -210,7 +210,7 @@ public class VersionMetadataCollectionTest
             GameArgumentsForBaseVersion = [new MArgument("child_base_arg")],
             JvmArguments = [new MArgument("child_arg")],
             JvmArgumentsForBaseVersion = [new MArgument("child_base_arg")],
-            Libraries = [new MLibrary("child_lib")],
+            LibraryList = [new MLibrary("child_lib")],
 
             InheritsFrom = parent.Id
         };

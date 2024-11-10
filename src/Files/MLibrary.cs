@@ -38,11 +38,14 @@ public record MLibrary
 
     public MFileMetadata? GetNativeLibrary(LauncherOSRule os)
     {
-        var classifierId = GetClassifierId(os);
-        if (string.IsNullOrEmpty(classifierId) || Classifiers == null)
+        if (Classifiers == null)
             return null;
 
-        if (Classifiers.TryGetValue(classifierId, out var classifier))
+        var classifierId = GetClassifierId(os);
+        MFileMetadata? classifier;
+        if (!string.IsNullOrEmpty(classifierId) && Classifiers.TryGetValue(classifierId, out classifier))
+            return classifier;
+        else if (!string.IsNullOrEmpty(os.Name) && Classifiers.TryGetValue(os.Name, out classifier))
             return classifier;
         else
             return null;
@@ -54,7 +57,7 @@ public record MLibrary
         if (!string.IsNullOrEmpty(path))
             return path;
         
-        return PackageName.Parse(Name).GetPath(null);
+        return PackageName.Parse(Name).GetPath(null, Path.DirectorySeparatorChar);
     }
 
     public string? GetNativeLibraryPath(LauncherOSRule os)
@@ -66,6 +69,6 @@ public record MLibrary
         var classifierId = GetClassifierId(os);
         if (string.IsNullOrEmpty(classifierId))
             return null;
-        return PackageName.Parse(Name).GetPath(classifierId);
+        return PackageName.Parse(Name).GetPath(classifierId, Path.DirectorySeparatorChar);
     }
 }
