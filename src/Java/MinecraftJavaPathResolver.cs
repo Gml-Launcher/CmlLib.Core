@@ -14,6 +14,26 @@ public class MinecraftJavaPathResolver : IJavaPathResolver
         this._path = path;
     }
 
+    public IReadOnlyCollection<string> GetInstalledJavaVersions()
+    {
+        var dir = new DirectoryInfo(_path.Runtime);
+        if (!dir.Exists)
+            return [];
+
+        var topLevelDirectories = dir.GetDirectories();
+
+        var secondLevelDirectories = topLevelDirectories
+            .SelectMany(d => d.GetDirectories())
+            .ToArray();
+
+        var allDirectories = topLevelDirectories.Concat(secondLevelDirectories);
+
+        return allDirectories
+            .Select(x => x.Name)
+            .Distinct()
+            .ToArray();
+    }
+
     public IReadOnlyCollection<string> GetInstalledJavaVersions(RulesEvaluatorContext rules)
     {
         var dir = new DirectoryInfo(_path.Runtime);

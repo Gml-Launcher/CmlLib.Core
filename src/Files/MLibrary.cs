@@ -5,7 +5,7 @@ namespace CmlLib.Core.Version;
 
 public record MLibrary
 {
-    public MLibrary(string name) => 
+    public MLibrary(string name) =>
         Name = name;
 
     public MFileMetadata? Artifact { get; init; }
@@ -32,8 +32,12 @@ public record MLibrary
         if (string.IsNullOrEmpty(os.Name) || string.IsNullOrEmpty(os.Arch))
             throw new ArgumentException("Invalid LauncherOSRule: empty Name or Arch");
 
-        var classifierId = Natives?[os.Name]?.Replace("${arch}", os.Arch);
-        return classifierId;
+        if (Natives is not null && Natives.TryGetValue(os.Name, out var classifierId))
+        {
+            return classifierId.Replace("${arch}", os.Arch);
+        }
+
+        return null;
     }
 
     public MFileMetadata? GetNativeLibrary(LauncherOSRule os)
@@ -56,7 +60,7 @@ public record MLibrary
         var path = Artifact?.Path;
         if (!string.IsNullOrEmpty(path))
             return path;
-        
+
         return PackageName.Parse(Name).GetPath(null, Path.DirectorySeparatorChar);
     }
 

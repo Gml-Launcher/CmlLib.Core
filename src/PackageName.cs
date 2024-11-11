@@ -40,6 +40,11 @@ public class PackageName
     /// </summary>
     public string Version => names[2];
 
+    public string GetPath()
+    {
+        return GetPath(null, Path.DirectorySeparatorChar);
+    }
+
     public string GetPath(string? nativeId, char separator)
     {
         return GetPath(nativeId, "jar", separator);
