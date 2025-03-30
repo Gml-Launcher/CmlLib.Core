@@ -30,19 +30,19 @@ public class MinecraftLauncher
     public RulesEvaluatorContext RulesContext { get; set; }
     public VersionMetadataCollection? Versions { get; private set; }
 
-    public MinecraftLauncher() : 
+    public MinecraftLauncher() :
         this(new MinecraftPath())
     {
 
     }
 
-    public MinecraftLauncher(string path) : 
+    public MinecraftLauncher(string path) :
         this(MinecraftLauncherParameters.CreateDefault(new MinecraftPath(path)))
     {
 
     }
 
-    public MinecraftLauncher(MinecraftPath path) : 
+    public MinecraftLauncher(MinecraftPath path) :
         this(MinecraftLauncherParameters.CreateDefault(path))
     {
 
@@ -77,7 +77,7 @@ public class MinecraftLauncher
     }
 
     public async ValueTask<IVersion> GetVersionAsync(
-        string versionName, 
+        string versionName,
         CancellationToken cancellationToken = default)
     {
         if (Versions == null)
@@ -95,7 +95,7 @@ public class MinecraftLauncher
     }
 
     public async ValueTask<IEnumerable<GameFile>> ExtractFiles(
-        string versionName, 
+        string versionName,
         CancellationToken cancellationToken = default)
     {
         var version = await GetVersionAsync(versionName, cancellationToken);
@@ -195,7 +195,7 @@ public class MinecraftLauncher
 
     private string createNativePath(IVersion version)
     {
-        NativeLibraryExtractor.Clean(MinecraftPath, version);
+        // NativeLibraryExtractor.Clean(MinecraftPath, version);
         return NativeLibraryExtractor.Extract(MinecraftPath, version, RulesContext);
     }
 
