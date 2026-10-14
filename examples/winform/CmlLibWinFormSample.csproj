@@ -9,7 +9,7 @@
         <EnableWindowsTargeting>true</EnableWindowsTargeting>
     </PropertyGroup>
     <ItemGroup>
-      <PackageReference Include="CmlLib.Core.Auth.Microsoft" Version="3.1.0-beta.4" />
+      <PackageReference Include="CmlLib.Core.Auth.Microsoft" Version="3.3.1" />
     </ItemGroup>
 
     <ItemGroup>
